@@ -1,0 +1,23 @@
+{
+  "name": "office-template-library",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "dev": "npm run dev --workspace apps/api & npm run dev --workspace apps/web",
+    "build": "npm run build --workspace packages/shared && npm run build --workspace apps/web && npm run build --workspace apps/api",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "templates:generate": "tsx scripts/generate-templates.ts",
+    "templates:render": "tsx scripts/render-previews.ts",
+    "templates:import": "npm run import --workspace apps/api"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "docx": "9.15.0",
+    "pptxgenjs": "4.0.1",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

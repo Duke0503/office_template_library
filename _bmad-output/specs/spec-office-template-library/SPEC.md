@@ -3,6 +3,7 @@ id: SPEC-office-template-library
 companions:
   - stack.md
   - deliverables.md
+  - ../../planning-artifacts/architecture/architecture-office-template-library-2026-10-29/ARCHITECTURE-SPINE.md
 sources:
   - ../../../docs/reference/brief.md
 ---

@@ -1,7 +1,7 @@
 {
   "$schema": "../.claude/skills/bmad-domain-driven/references/domain-model.schema.json",
   "application": "Office Template Library",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "generatedAt": "2026-10-29",
   "locale": "en",
   "status": "target",
@@ -64,7 +64,8 @@
             "The template kind matches the MIME type of its file.",
             "A published template has a thumbnail and at least one preview.",
             "A stored template file is never rewritten. A new revision gets a new storage key (D2: a template update creates a new revision).",
-            "The slug is unique within its kind."
+            "The slug is unique within its kind.",
+            "A revision row is committed only after its file is stored and its checksum verified."
           ],
           "buildingBlockIds": [
             "template-id",
@@ -140,6 +141,13 @@
               "required": true,
               "kind": "value-object",
               "description": "The current revision's file in the read-only template store."
+            },
+            {
+              "name": "revisions",
+              "type": "TemplateRevision[]",
+              "required": true,
+              "kind": "collection",
+              "description": "Every stored revision: number, storage key, sha256, preview count. The highest is current."
             },
             {
               "name": "thumbnail",
@@ -468,16 +476,6 @@
               "kind": "value-object"
             },
             {
-              "name": "status",
-              "type": "DocumentStatus",
-              "required": true,
-              "kind": "value-object",
-              "enumValues": [
-                "ready",
-                "editing"
-              ]
-            },
-            {
               "name": "createdAt",
               "type": "datetime",
               "required": true,
@@ -492,56 +490,51 @@
             }
           ],
           "lifecycle": {
-            "stateType": "DocumentStatus",
-            "initial": "ready",
-            "kind": "state-machine",
-            "description": "A document is ready until someone opens it in the editor. Each saved version returns it to ready with a higher version.",
+            "stateType": "version",
+            "initial": "v1",
+            "kind": "lifecycle",
+            "description": "A document has no persisted status. Each saved version moves it to the next version with a new editor key (architecture AD-6).",
             "states": [
               {
-                "name": "ready",
-                "label": "Ready"
+                "name": "v1",
+                "label": "Created (version 1)"
               },
               {
-                "name": "editing",
-                "label": "Editing"
+                "name": "vN",
+                "label": "Saved (version n)"
               }
             ],
             "transitions": [
               {
-                "from": "ready",
-                "action": "open_in_editor",
-                "to": "editing",
-                "description": "The user opens the document in the integrated editor.",
-                "sideEffects": [
-                  "The editor loads the current version under the current editor key."
-                ],
-                "guards": [
-                  "The document exists and its file is readable in the document store."
-                ]
-              },
-              {
-                "from": "editing",
+                "from": "v1",
                 "action": "save_edited_version",
-                "to": "ready",
-                "description": "The editor reports that an edited version is ready to store.",
+                "to": "vN",
+                "description": "The editor reports an edited version ready to store.",
                 "guards": [
-                  "The save callback is signed by the editor.",
-                  "The callback names the document's current editor key."
+                  "The callback is signed by the editor.",
+                  "The callback key equals the current editor key."
                 ],
                 "emits": [
                   "workspace.document.saved"
                 ],
                 "sideEffects": [
-                  "The new file replaces the document's file. The version goes up by one and the editor key changes."
+                  "The version goes up by one and the editor key changes."
                 ]
               },
               {
-                "from": "editing",
-                "action": "close_without_changes",
-                "to": "ready",
-                "description": "The editor reports that the session closed with no changes.",
+                "from": "vN",
+                "action": "save_edited_version",
+                "to": "vN",
+                "description": "Each later save stores another version.",
                 "guards": [
-                  "The save callback is signed by the editor."
+                  "The callback is signed by the editor.",
+                  "The callback key equals the current editor key."
+                ],
+                "emits": [
+                  "workspace.document.saved"
+                ],
+                "sideEffects": [
+                  "The version goes up by one and the editor key changes."
                 ]
               }
             ]
@@ -635,6 +628,13 @@
           "id": "callback-authenticity",
           "description": "The workspace accepts a saved version only from a signed editor callback.",
           "kind": "authorization",
+          "declaredOn": "document",
+          "status": "target"
+        },
+        {
+          "id": "document-from-one-revision",
+          "description": "A document is copied from one fixed revision descriptor and its checksum must match that revision.",
+          "kind": "invariant",
           "declaredOn": "document",
           "status": "target"
         }
@@ -897,6 +897,19 @@
         "Sign editor configurations with JWT.",
         "Verify and translate save callbacks.",
         "Call the conversion API for previews."
+      ],
+      "status": "target"
+    },
+    {
+      "id": "template-revision",
+      "name": "TemplateRevision",
+      "kind": "entity",
+      "scope": "aggregate",
+      "context": "catalog",
+      "aggregate": "template",
+      "purpose": "One stored version of a template file with its checksum and previews.",
+      "invariants": [
+        "Unique per template and revision number."
       ],
       "status": "target"
     }

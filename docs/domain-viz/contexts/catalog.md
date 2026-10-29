@@ -39,7 +39,8 @@ A template is a ready-made DOCX or PPTX file that users copy. It holds the metad
 - A published template has a thumbnail and at least one preview.
 - A stored template file is never rewritten. A new revision gets a new storage key (D2: a template update creates a new revision).
 - The slug is unique within its kind.
-**13 fields:**
+- A revision row is committed only after its file is stored and its checksum verified.
+**14 fields:**
 | Field | Type / reference | Required | Description |
 |---|---|---|---|
 | `id` | `TemplateId` | yes |  |
@@ -50,6 +51,7 @@ A template is a ready-made DOCX or PPTX file that users copy. It holds the metad
 | `categoryId` | → `category` | yes |  |
 | `revision` | `integer` | yes |  |
 | `file` | `StoredFile` | yes | The current revision's file in the read-only template store. |
+| `revisions` | `TemplateRevision[]` | yes | Every stored revision: number, storage key, sha256, preview count. The highest is current. |
 | `thumbnail` | `PreviewImage` | yes |  |
 | `previews` | `PreviewImage[]` | yes | One image per page (DOCX) or per slide (PPTX), in order. |
 | `status` | `TemplateStatus` | yes |  |
@@ -79,6 +81,13 @@ A category is a label that groups templates, such as Business or Education. One 
 |---|---|---|---|
 | Template | `id` | `TemplateId` | Identifies one template. Clients never pass file paths, only this id. |
 | Category | `id` | `CategoryId` |  |
+
+**Entity** (1)
+
+| Building block | Purpose | Detail | Scope |
+|---|---|---|---|
+| `TemplateRevision` | One stored version of a template file with its checksum and previews. | Unique per template and revision number. | aggregate, in template |
+
 
 **Value object** (3)
 
@@ -125,7 +134,7 @@ A category is a label that groups templates, such as Business or Education. One 
 | `TemplateGalleryView` | Published templates of one kind filtered by search text and category, for the gallery. |  | bounded-context |
 
 
-**Not modelled yet:** `entity`, `specification`, `policy`. This is not always a gap: a supporting domain often keeps its rules inside the aggregate root.
+**Not modelled yet:** `specification`, `policy`. This is not always a gap: a supporting domain often keeps its rules inside the aggregate root.
 
 ## Lifecycle
 
@@ -173,7 +182,7 @@ stateDiagram-v2
 
 ## Rules & policies
 
-**invariant** (6)
+**invariant** (7)
 
 | Rule | Declared on | Status |
 |---|---|---|
@@ -182,6 +191,7 @@ stateDiagram-v2
 | A published template has a thumbnail and at least one preview. | Template |  |
 | A stored template file is never rewritten. A new revision gets a new storage key (D2: a template update creates a new revision). | Template |  |
 | The slug is unique within its kind. | Template |  |
+| A revision row is committed only after its file is stored and its checksum verified. | Template |  |
 | The category slug is unique. | Category |  |
 
 

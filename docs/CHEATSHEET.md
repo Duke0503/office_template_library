@@ -34,6 +34,7 @@ A template is a ready-made DOCX or PPTX file that users copy. It holds the metad
 | `categoryId` | `CategoryId` | yes | `category` |  |
 | `revision` | `integer` | yes | `` | starts at 1, increases by one on each update |
 | `file` | `StoredFile` | yes | `` |  |
+| `revisions` | `TemplateRevision[]` | yes | `` |  |
 | `thumbnail` | `PreviewImage` | yes | `` |  |
 | `previews` | `PreviewImage[]` | yes | `` |  |
 | `status` | `TemplateStatus` | yes | `` |  |
@@ -67,7 +68,6 @@ A document is the user's own copy of a template. It holds its file, its origin a
 | `file` | `StoredFile` | yes | `` |  |
 | `version` | `integer` | yes | `` | starts at 1 |
 | `editorKey` | `EditorKey` | yes | `` |  |
-| `status` | `DocumentStatus` | yes | `` |  |
 | `createdAt` | `datetime` | yes | `` |  |
 | `updatedAt` | `datetime` | yes | `` |  |
 

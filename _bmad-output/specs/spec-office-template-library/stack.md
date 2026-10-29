@@ -1,15 +1,15 @@
 # Stack
 
-**Decided** means the user confirmed it. **Proposed** is a default that `bmad-architecture` confirms or replaces.
+All choices are decided by the architecture spine (`ARCHITECTURE-SPINE.md`, AD-1 to AD-14). Versions are pinned there.
 
-| Area | Choice | Status | Note |
-|---|---|---|---|
-| Integrated editor | ONLYOFFICE Document Server Community Edition (Docker) | Decided | Edits DOCX and PPTX in the browser with full formatting. AGPL-3.0, run as a separate unmodified service |
-| Run model | Docker Compose: app, Document Server, database | Decided | One command. The Document Server and the app must reach each other for file fetch and the save callback |
-| Frontend | React, Vite, TypeScript | Proposed | Embeds the ONLYOFFICE editor through its JavaScript API |
-| Backend | Node.js, Express, TypeScript | Proposed | Template and document API, file serving, ONLYOFFICE callback |
-| Database | SQLite through Prisma | Proposed | Template and document metadata. Files stay on disk |
-| Storage | `storage/templates/` (read-only originals and previews), `storage/documents/` (copies) | Proposed | The templates volume is mounted read-only into the app container |
-| Previews | Generated from template files at import (ONLYOFFICE conversion API or LibreOffice) | Proposed | Thumbnail per template, one image per slide for PPTX |
-| Editor security | ONLYOFFICE JWT enabled; callback requests verified | Proposed | |
-| Tests | Vitest and Supertest (API); Playwright smoke test optional | Proposed | Copy isolation by checksum, not-found paths, callback save |
+| Area | Choice |
+|---|---|
+| Integrated editor | ONLYOFFICE Document Server Community Edition 9.4.0 (Docker, AGPL-3.0, unmodified separate service) |
+| Run model | Docker Compose with two services: `app` and `documentserver` |
+| Frontend | React, Vite, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, React Router |
+| Backend | Node.js 24, Express 5, TypeScript, zod |
+| Database | SQLite through Drizzle ORM and better-sqlite3. Files stay on disk |
+| Storage | Repo `templates/` (manifest, files, previews) mounted read-only; `STORAGE_ROOT` volume for stored revisions and documents |
+| Previews | Rendered offline through the ONLYOFFICE conversion API and committed |
+| Editor security | ONLYOFFICE JWT on both directions; signed, version-bound file URLs |
+| Tests | Vitest and Supertest |

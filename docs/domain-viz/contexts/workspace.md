@@ -25,7 +25,6 @@ Documents users create from templates, edit and download. Copy isolation lives h
 | `EditorKey` | value-object | The cache key the editor uses for one document version. |
 | `TemplateKind` | value-object | Type of field kind on Document |
 | `StoredFile` | value-object | Type of field file on Document |
-| `DocumentStatus` | value-object | Type of field status on Document |
 
 ## Aggregates
 
@@ -39,7 +38,7 @@ A document is the user's own copy of a template. It holds its file, its origin a
 - The document kind equals the kind of its source template.
 - Every saved version gets a new editor key.
 - The version increases by one on every saved version.
-**10 fields:**
+**9 fields:**
 | Field | Type / reference | Required | Description |
 |---|---|---|---|
 | `id` | `DocumentId` | yes |  |
@@ -49,7 +48,6 @@ A document is the user's own copy of a template. It holds its file, its origin a
 | `file` | `StoredFile` | yes |  |
 | `version` | `integer` | yes |  |
 | `editorKey` | `EditorKey` | yes |  |
-| `status` | `DocumentStatus` | yes |  |
 | `createdAt` | `datetime` | yes |  |
 | `updatedAt` | `datetime` | yes |  |
 
@@ -109,23 +107,21 @@ A document is the user's own copy of a template. It holds its file, its origin a
 
 ## Lifecycle
 
-### Document · `DocumentStatus`
-A document is ready until someone opens it in the editor. Each saved version returns it to ready with a higher version.
+### Document · `version`
+A document has no persisted status. Each saved version moves it to the next version with a new editor key (architecture AD-6).
 ```mermaid
 stateDiagram-v2
     direction LR
-    [*] --> ready
-    ready --> editing: open_in_editor
-    editing --> ready: save_edited_version [, ]
-    editing --> ready: close_without_changes
+    [*] --> v1
+    v1 --> vN: save_edited_version [, ]
+    vN --> vN: save_edited_version [, ]
 ```
-**3 transitions**: guard, event emitted, what happens next
+**2 transitions**: guard, event emitted, what happens next
 
 | From | Command | To | Guard | Emits | Then |
 |---|---|---|---|---|---|
-| ready | open_in_editor | editing | — | — | The editor loads the current version under the current editor key. · The user opens the document in the integrated editor. |
-| editing | save_edited_version | ready | , | workspace.document.saved | The new file replaces the document's file. The version goes up by one and the editor key changes. · The editor reports that an edited version is ready to store. |
-| editing | close_without_changes | ready | — | — | The editor reports that the session closed with no changes. |
+| v1 | save_edited_version | vN | , | workspace.document.saved | The version goes up by one and the editor key changes. · The editor reports an edited version ready to store. |
+| vN | save_edited_version | vN | , | workspace.document.saved | The version goes up by one and the editor key changes. · Each later save stores another version. |
 
 ## Commands & use cases
 
@@ -135,15 +131,12 @@ stateDiagram-v2
 | Edit a document | User | The user changes the document in the integrated editor. Saved changes persist to that document only. |
 | Download a document | User | The user downloads the current version as DOCX or PPTX. |
 | List my documents | User | The user sees earlier documents and reopens or downloads any of them. |
-| open_in_editor | Document | The user opens the document in the integrated editor. |
-| save_edited_version | Document | The editor reports that an edited version is ready to store. |
-| close_without_changes | Document | The editor reports that the session closed with no changes. |
+| save_edited_version | Document | The editor reports an edited version ready to store. |
 
 ## Events
 
-- command `save_edited_version` → aggregate `Document` → event **workspace.document.saved**; then The new file replaces the document's file. The version goes up by one and the editor key changes.
-
-Commands that emit no event (nothing elsewhere can react): `open_in_editor`, `close_without_changes`
+- command `save_edited_version` → aggregate `Document` → event **workspace.document.saved**; then The version goes up by one and the editor key changes.
+- command `save_edited_version` → aggregate `Document` → event **workspace.document.saved**; then The version goes up by one and the editor key changes.
 
 | Event | Happens when | Who listens |
 |---|---|---|
@@ -152,11 +145,12 @@ Commands that emit no event (nothing elsewhere can react): `open_in_editor`, `cl
 
 ## Rules & policies
 
-**invariant** (5)
+**invariant** (6)
 
 | Rule | Declared on | Status |
 |---|---|---|
 | Creating a document copies the template file to new storage. The template file is never opened for writing. | Document Workspace | target · agreed goal |
+| A document is copied from one fixed revision descriptor and its checksum must match that revision. | Document Workspace | target · agreed goal |
 | The document file lives in the document store, never in the template store. | Document |  |
 | The document kind equals the kind of its source template. | Document |  |
 | Every saved version gets a new editor key. | Document |  |
