@@ -17,7 +17,7 @@ test.describe('galleries', () => {
 
     await page.goto('/templates/pptx');
     await expect(page.getByRole('heading', { name: 'Presentation templates' })).toBeVisible();
-    expect(await page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(3);
+    await expect.poll(() => page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(3);
   });
 
   test('search narrows the grid, keeps the query in the URL and shows an empty state', async ({ page }) => {
@@ -33,7 +33,7 @@ test.describe('galleries', () => {
     await page.getByRole('searchbox').fill('zzzz-no-match');
     await expect(page.getByText('No templates match "zzzz-no-match"')).toBeVisible();
     await page.getByRole('button', { name: 'Clear filters' }).click();
-    expect(await page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(5);
+    await expect.poll(() => page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(5);
   });
 
   test('category chips filter by category', async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('galleries', () => {
     await expect(page.getByTestId('template-card')).toHaveCount(1);
     await expect(page.getByTestId('template-card')).toContainText('Lesson Plan');
     await page.getByRole('radio', { name: 'All' }).click();
-    expect(await page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(5);
+    await expect.poll(() => page.getByTestId('template-card').count()).toBeGreaterThanOrEqual(5);
   });
 
   test('preview shows every slide, pages with the keyboard, and closes with Escape @responsive', async ({ page }) => {

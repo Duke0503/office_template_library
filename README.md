@@ -176,7 +176,7 @@ docs/            API and data model, domain model and rendered views
 
 - Both products: document and presentation galleries, search, category filter, preview, use template, ONLYOFFICE editing, save on close, download, and My documents.
 - Template data model, manifest import with revisions and archiving, and file type validation.
-- 20 API tests and 10 Playwright e2e tests (8 gallery and state tests, 2 editor round trips).
+- 20 API tests and 9 Playwright e2e tests: 6 gallery and state tests, 2 real ONLYOFFICE round trips (DOCX edit and save, PPTX), and My documents. The 3 `@responsive` tests also run on a phone viewport, 12 runs in total. All pass against `docker compose up`.
 - Docker Compose with one command, plus light and dark themes and responsive layouts.
 
 ### Not done and limits

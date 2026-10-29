@@ -14,7 +14,7 @@ import jwt from 'jsonwebtoken';
 
 const ROOT = path.resolve(import.meta.dirname, '../templates');
 const DOCSERVER_URL = process.env.DOCSERVER_URL ?? 'http://localhost:8080';
-const JWT_SECRET = process.env.ONLYOFFICE_JWT_SECRET ?? 'dev-onlyoffice-secret-change-me';
+const JWT_SECRET = process.env.ONLYOFFICE_JWT_SECRET ?? 'change-me-onlyoffice-secret-0123456789'; // docker-compose.yml default
 const PORT = Number(process.env.RENDER_PORT ?? 3999);
 /** How Document Server (in a container) reaches this script's file server on the host. */
 const FILE_BASE_URL = process.env.RENDER_FILE_BASE_URL ?? `http://host.docker.internal:${PORT}`;

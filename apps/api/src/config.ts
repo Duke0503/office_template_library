@@ -15,8 +15,8 @@ const schema = z.object({
   WEB_DIST_DIR: z.string().default(''),
   /** Secret for signed file URLs handed to Document Server (AD-7). */
   APP_SECRET: z.string().min(16).default('dev-app-secret-change-me'),
-  /** Shared with Document Server as JWT_SECRET (AD-7). */
-  ONLYOFFICE_JWT_SECRET: z.string().min(16).default('dev-onlyoffice-secret-change-me'),
+  /** Shared with Document Server as JWT_SECRET (AD-7). Defaults to the docker-compose.yml value. */
+  ONLYOFFICE_JWT_SECRET: z.string().min(16).default('change-me-onlyoffice-secret-0123456789'),
   /** Origin the browser loads the editor from. */
   PUBLIC_DOCSERVER_URL: z.url().default('http://localhost:8080'),
   /** Origin the app container uses to reach Document Server. */

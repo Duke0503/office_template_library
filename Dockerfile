@@ -1,5 +1,9 @@
 # Builds the app image: Express API + built SPA (AD-11). Templates are mounted at runtime.
-FROM node:24.22.1-bookworm-slim AS build
+# better-sqlite3 compiles from source when no prebuilt binary matches, so the install stages carry a toolchain.
+FROM node:24.22.1-bookworm-slim AS toolchain
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+
+FROM toolchain AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY packages/shared/package.json packages/shared/
@@ -13,15 +17,22 @@ COPY apps/api apps/api
 COPY apps/web apps/web
 RUN npm run build
 
-FROM node:24.22.1-bookworm-slim AS runtime
-ENV NODE_ENV=production
+FROM toolchain AS prod-deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY packages/shared/package.json packages/shared/
 COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
 COPY e2e/package.json e2e/
-RUN npm ci --omit=dev --no-audit --no-fund --workspace apps/api --include-workspace-root=false && npm cache clean --force
+RUN npm ci --omit=dev --no-audit --no-fund --workspace apps/api --include-workspace-root=false
+
+FROM node:24.22.1-bookworm-slim AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+COPY package.json ./
+COPY packages/shared/package.json packages/shared/
+COPY apps/api/package.json apps/api/
+COPY --from=prod-deps /app/node_modules node_modules
 COPY --from=build /app/packages/shared/dist packages/shared/dist
 COPY --from=build /app/apps/api/dist apps/api/dist
 COPY --from=build /app/apps/api/drizzle apps/api/drizzle

@@ -63,7 +63,8 @@ test('PPTX: create a presentation, open it in the editor and download a valid PP
 
 test('My documents lists created documents with open and download actions @responsive', async ({ page }) => {
   await page.goto('/documents');
-  const row = page.getByTestId('document-row').first();
+  // Desktop renders a table and phone renders cards; only one of them is visible.
+  const row = page.getByTestId('document-row').filter({ visible: true }).first();
   await expect(row).toBeVisible();
   await expect(row.getByRole('link', { name: 'Open' })).toBeVisible();
   await expect(row.getByRole('link', { name: 'Download' })).toHaveAttribute('href', /\/api\/documents\/.+\/download$/);
