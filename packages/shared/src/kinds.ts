@@ -17,6 +17,8 @@ export interface KindDefinition {
   pluralLabel: string;
   /** What one preview image shows. */
   previewUnit: 'page' | 'slide';
+  /** CSS aspect-ratio of one page or slide: portrait A4 or 16:9. */
+  previewAspect: string;
 }
 
 export const KINDS: Record<TemplateKind, KindDefinition> = {
@@ -30,6 +32,7 @@ export const KINDS: Record<TemplateKind, KindDefinition> = {
     label: 'Document',
     pluralLabel: 'Documents',
     previewUnit: 'page',
+    previewAspect: '210 / 297',
   },
   pptx: {
     kind: 'pptx',
@@ -41,6 +44,7 @@ export const KINDS: Record<TemplateKind, KindDefinition> = {
     label: 'Presentation',
     pluralLabel: 'Presentations',
     previewUnit: 'slide',
+    previewAspect: '16 / 9',
   },
 };
 

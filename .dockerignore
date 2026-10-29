@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+.data
+.git
+.claude
+_bmad
+_bmad-output
+docs
+e2e/test-results
+e2e/playwright-report
+templates
+*.md

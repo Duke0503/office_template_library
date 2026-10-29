@@ -21,3 +21,9 @@ Thumbs.db
 .vscode/
 .idea/
 __pycache__/
+
+# Local runtime data and test output
+.data/
+e2e/*.tmp.mjs
+e2e/test-results/
+e2e/playwright-report/
