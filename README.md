@@ -75,8 +75,8 @@ flowchart LR
   browser -->|":8080 editor"| ds[documentserver<br/>ONLYOFFICE 9.4]
   ds -->|"fetch file (signed URL)<br/>save callback (JWT)"| app
   app -->|"download edited file"| ds
-  app --- data[(volume: SQLite + files)]
-  app --- tpl[/./templates (read-only)/]
+  app --- data[("volume: SQLite + files")]
+  app --- tpl[/"./templates (read-only)"/]
 ```
 
 | Module | Role | Owns |

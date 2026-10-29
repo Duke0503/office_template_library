@@ -239,8 +239,8 @@ flowchart LR
   user -->|":8080 editor api.js"| ds[documentserver container<br/>ONLYOFFICE 9.4.0]
   ds -->|"file fetch + save callback<br/>APP_INTERNAL_URL, JWT"| app
   app -->|"edited file download<br/>DOCSERVER_INTERNAL_URL"| ds
-  app --- vol[(volume: data<br/>app.db, storage/)]
-  app --- man[/./templates read-only<br/>MANIFEST_DIR/]
+  app --- vol[("volume: data<br/>app.db, storage/")]
+  app --- man[/"./templates read-only<br/>MANIFEST_DIR"/]
 ```
 
 ```mermaid
