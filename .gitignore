@@ -1,0 +1,23 @@
+# Personal BMAD settings
+*.user.toml
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Runtime storage (user documents)
+storage/documents/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
