@@ -1,0 +1,46 @@
+# One command starts everything: docker compose up --build  ->  http://localhost:3000
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      PORT: 3000
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      NODE_ENV: production
+      MANIFEST_DIR: /templates
+      STORAGE_ROOT: /data
+      WEB_DIST_DIR: /app/apps/web/dist
+      APP_SECRET: ${APP_SECRET:-change-me-app-secret-0123456789}
+      ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-change-me-onlyoffice-secret-0123456789}
+      PUBLIC_DOCSERVER_URL: ${PUBLIC_DOCSERVER_URL:-http://localhost:8080}
+      DOCSERVER_INTERNAL_URL: http://documentserver
+      APP_INTERNAL_URL: http://app:3000
+    volumes:
+      # The manifest is mounted read-only: adding a template needs no image rebuild (AD-4).
+      - ./templates:/templates:ro
+      - app-data:/data
+    depends_on:
+      - documentserver
+    restart: unless-stopped
+
+  documentserver:
+    image: onlyoffice/documentserver:9.4.0
+    ports:
+      - "8080:80"
+    environment:
+      JWT_ENABLED: "true"
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-change-me-onlyoffice-secret-0123456789}
+      JWT_HEADER: Authorization
+      # The app lives on the private compose network (AD-7).
+      ALLOW_PRIVATE_IP_ADDRESS: "true"
+    extra_hosts:
+      # Lets `npm run dev` and `npm run templates:render` on the host serve files to Document Server.
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - documentserver-data:/var/www/onlyoffice/Data
+    restart: unless-stopped
+
+volumes:
+  app-data:
+  documentserver-data:

@@ -1,0 +1,101 @@
+{
+  "categories": [
+    { "slug": "business", "name": "Business" },
+    { "slug": "finance", "name": "Finance" },
+    { "slug": "career", "name": "Career" },
+    { "slug": "education", "name": "Education" },
+    { "slug": "marketing", "name": "Marketing" }
+  ],
+  "templates": [
+    {
+      "kind": "docx",
+      "slug": "business-letter",
+      "name": "Business Letter",
+      "category": "business",
+      "description": "A formal one-page letter with letterhead, subject line, bullet points and signature block.",
+      "file": "files/business-letter.docx",
+      "previews": "previews/business-letter"
+    },
+    {
+      "kind": "docx",
+      "slug": "meeting-minutes",
+      "name": "Meeting Minutes",
+      "category": "business",
+      "description": "Record attendees, agenda, decisions and an action-item table for a team meeting.",
+      "file": "files/meeting-minutes.docx",
+      "previews": "previews/meeting-minutes"
+    },
+    {
+      "kind": "docx",
+      "slug": "project-proposal",
+      "name": "Project Proposal",
+      "category": "business",
+      "description": "Problem, goals, scope, timeline, budget and risks for a new project, ready for a sponsor.",
+      "file": "files/project-proposal.docx",
+      "previews": "previews/project-proposal"
+    },
+    {
+      "kind": "docx",
+      "slug": "invoice",
+      "name": "Invoice",
+      "category": "finance",
+      "description": "A service invoice with billing details, itemised amounts, VAT and payment instructions.",
+      "file": "files/invoice.docx",
+      "previews": "previews/invoice"
+    },
+    {
+      "kind": "docx",
+      "slug": "resume",
+      "name": "Resume",
+      "category": "career",
+      "description": "A clean developer resume with profile, experience, a skills table and education.",
+      "file": "files/resume.docx",
+      "previews": "previews/resume"
+    },
+    {
+      "kind": "docx",
+      "slug": "lesson-plan",
+      "name": "Lesson Plan",
+      "category": "education",
+      "description": "A 45-minute lesson plan with objectives, materials, a timed lesson flow and assessment.",
+      "file": "files/lesson-plan.docx",
+      "previews": "previews/lesson-plan"
+    },
+    {
+      "kind": "pptx",
+      "slug": "pitch-deck",
+      "name": "Startup Pitch Deck",
+      "category": "business",
+      "description": "Five slides: problem, solution, traction chart and the ask, in a confident blue theme.",
+      "file": "files/pitch-deck.pptx",
+      "previews": "previews/pitch-deck"
+    },
+    {
+      "kind": "pptx",
+      "slug": "quarterly-report",
+      "name": "Quarterly Business Review",
+      "category": "finance",
+      "description": "Highlights, a revenue line chart, a key-figures table and next steps for a quarterly review.",
+      "file": "files/quarterly-report.pptx",
+      "previews": "previews/quarterly-report"
+    },
+    {
+      "kind": "pptx",
+      "slug": "class-lesson",
+      "name": "Classroom Lesson",
+      "category": "education",
+      "description": "A bright lesson deck with objectives, four concept cards and an exit ticket.",
+      "file": "files/class-lesson.pptx",
+      "previews": "previews/class-lesson"
+    },
+    {
+      "kind": "pptx",
+      "slug": "product-launch",
+      "name": "Product Launch",
+      "category": "marketing",
+      "description": "A dark, high-contrast launch deck with feature cards and a week-by-week launch plan.",
+      "file": "files/product-launch.pptx",
+      "previews": "previews/product-launch"
+    }
+  ]
+}

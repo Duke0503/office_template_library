@@ -170,6 +170,12 @@ flowchart LR
 - **Rule:**
   - Vitest unit tests cover domain rules.
   - Supertest API tests use a temp storage root and a fake `EditorGateway`. They cover copy isolation by checksum, revision import, not-found and archived errors, bad-JWT and stale-key callbacks, and path traversal.
+  - Playwright end-to-end tests in `e2e/` run against the full `docker compose` stack. They cover:
+    - Browsing and filtering both galleries, and previewing a template.
+    - Using a template, editing it in ONLYOFFICE, saving and reopening it.
+    - Downloading the document and checking that it is a valid file of its kind.
+    - Template checksums being unchanged afterwards.
+    - The not-found pages.
 
 ### AD-13 — A document is created from one fixed revision descriptor
 
@@ -221,6 +227,7 @@ flowchart LR
 | react-router | 8.5.1 |
 | @onlyoffice/document-editor-react / doceditor-types | 2.3.0 / 9.4.3 |
 | Vitest / Supertest | 5.0.5 / 7.3.1 |
+| @playwright/test | 1.64.1 |
 | docx / pptxgenjs (seed generation) | 9.15.0 / 4.0.1 |
 | onlyoffice/documentserver | 9.4.0 |
 
@@ -300,5 +307,4 @@ office-template-library/
 - **Force-save and co-editing across tabs.** Off. ONLYOFFICE handles one session per key.
 - **Linting.** typescript-eslint does not support TypeScript 7 yet. `tsc --noEmit` is the gate.
 - **ONLYOFFICE 10.x.** It changes JWT claims. Revisit after submission.
-- **End-to-end browser tests (Playwright).** Optional if time remains.
 - **XLSX.** One registry entry plus the `cell` documentType (AD-3).
