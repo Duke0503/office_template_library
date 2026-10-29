@@ -106,18 +106,18 @@ Load step: `./steps/step-01-load-context.md`
 - **Use DDD terms exactly as written** in `references/glossary.md`: domain, bounded context,
   aggregate, invariant, rule, policy, lifecycle, command, event, building block, port, adapter,
   read model... Do not coin synonyms.
-- **Mention a code, mention its content.** Every time Mary, Winston or the facilitator says "D15" or
-  "OQ41", add its short content in parentheses right after it: "D15 (the official price changes only
-  through an approved review)". This applies to speech, synthesis, discussion logs, decision files
+- **Mention a code, mention its content.** Every time Mary, Winston or the facilitator says "D2" or
+  "OQ1", add its short content in parentheses right after it: "D2 (a template update creates a new
+  revision)". This applies to speech, synthesis, discussion logs, decision files
   and text in the model. The reader never has to ask or look it up.
-- **Style: one sentence, one idea, a subject.** Standard sentence: "A setup becomes active only
-  after price enters its entry range." Applies to everything generated: description, invariant,
+- **Style: one sentence, one idea, a subject.** Standard sentence: "A document gets a new editor
+  key after every saved version." Applies to everything generated: description, invariant,
   rule, transition, event, use case, relation. Details are in the "Writing style" section of
-  `references/glossary.md`. Business words (setup, invalidation, value area, POC, CVD, guardrail...)
+  `references/glossary.md`. Business words (template, document, revision, preview, editor key...)
   keep the meaning in the "Business language" table; when a new word appears, add it to the table
   instead of inventing another name.
-- **Events and commands play their own roles.** A command is imperative (`confirm`, `invalidate`).
-  An event is past tense `<context>.<aggregate>.<what-happened>` (`radar.setup.activated`), with one
+- **Events and commands play their own roles.** A command is imperative (`archive_template`, `save_edited_version`).
+  An event is past tense `<context>.<aggregate>.<what-happened>` (`workspace.document.saved`), with one
   sentence saying when it happens and who listens.
 - Always distinguish `observed`, `target`, `proposed`, and `unknown`.
 - Mary and Winston may disagree. Surface the disagreement instead of averaging it away.

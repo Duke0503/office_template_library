@@ -131,12 +131,12 @@ When restyling, re-fetch the tokens from OpenDesign instead of editing hex value
 
 **Language of the model and the page (mandatory; the whole project is written in English):**
 
-- Write for a colleague who has just joined. Standard sentence: "A setup becomes active only after
-  price enters its entry range." Short sentences, one idea each, a real person or thing as the
-  subject ("The guardrail rejects the setup", "The Quant Engine publishes the profile"), no
+- Write for a colleague who has just joined. Standard sentence: "A document gets a new editor key
+  after every saved version." Short sentences, one idea each, a real person or thing as the
+  subject ("The workspace copies the template file", "The editor sends the save callback"), no
   "is performed by". No long dashes, no semicolons joining clauses, no parenthesis holding a whole
-  sentence. A transition side effect states the business consequence ("the setup leaves the radar
-  feed"), not a technical command. The "Writing style" section in `references/glossary.md` is the
+  sentence. A transition side effect states the business consequence ("the template leaves the
+  gallery"), not a technical command. The "Writing style" section in `references/glossary.md` is the
   full version.
 - Business words follow the "Business language" table in `references/glossary.md`; its source is
   `BUSINESS_GLOSSARY` in the renderer. When the model needs a new word, add it to both in the same commit.
@@ -145,17 +145,17 @@ When restyling, re-fetch the tokens from OpenDesign instead of editing hex value
   specification, lifecycle, state, transition, guard, command, event, use case, building block,
   domain service, repository, port, adapter, anti-corruption layer, process manager, read model,
   shared kernel, bounded context, subdomain core/supporting/generic. Do not coin synonyms.
-- Business names and explanations are plain English trading words: "setup", "invalidation",
-  "value area". Technical names stay in `resource`/`id`.
+- Business names and explanations are plain English office words: "template", "document",
+  "revision". Technical names stay in `resource`/`id`.
 - An aggregate description answers three questions in order: what it is, what it holds, what must
   never be false. `consistencyBoundary` starts with "Must be correct together: ...".
 - **Events and commands keep their identifiers.** An event id is past tense
-  `<context>.<aggregate>.<what-happened>` (`radar.setup.activated`); a command is an imperative verb
-  (`activate_setup`). Every event in `events[]` has a one-sentence `description`: when it happens and
+  `<context>.<aggregate>.<what-happened>` (`workspace.document.saved`); a command is an imperative verb
+  (`archive_template`). Every event in `events[]` has a one-sentence `description`: when it happens and
   who listens. The page draws the EventStorming sentence with the role labels
   `command · aggregate · event` so the reader does not have to guess.
-- **A code always carries its content.** In model text, logs and decisions: "D15 (the official price
-  changes only through an approved review)". The renderer annotates every `D<n>`/`OQ<n>` on the page
+- **A code always carries its content.** In model text, logs and decisions: "D2 (a template update creates a new
+  revision)". The renderer annotates every `D<n>`/`OQ<n>` on the page
   from `decisions[]`/`openQuestions[]`, but the source text must still read on its own in JSON or a log.
 - Displayed statuses use the English keyword with a short gloss: `observed · exists in code`,
   `target · agreed goal`, `proposed · suggested`, `unknown · not yet known`. A domain name never

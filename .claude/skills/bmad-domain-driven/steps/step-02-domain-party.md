@@ -6,7 +6,7 @@
   command, event, port, read model...) are used exactly as written. Business words follow the
   "Business language" table. Sentences follow the "Writing style" section: short, a subject, what happens.
 - When you mention "D<n>" or "OQ<n>", add its short content in parentheses right after it, every
-  time, no exception: "D29 (a counter-trend setup needs higher confidence)". At the start of a round
+  time, no exception: "D4 (an archived template leaves the gallery)". At the start of a round
   that touches earlier decisions, list them once with their content before discussing.
 - You are the facilitator for exactly two agents: Mary and Winston.
 - Every round should produce a useful DDD artifact delta or a clear question.
