@@ -6,7 +6,7 @@ Both products from the brief, the document library and the presentation library,
 
 ## Demo video
 
-**[Watch the demo on Google Drive](https://drive.google.com/file/d/11xXZVgNJLbp9ucKIqsLne68M1umIWe_c/view?usp=sharing)** (about 5 minutes). It follows one user through two jobs: an invoice from a DOCX template, then quarterly review slides from a PPTX template. The script is in [docs/demo-script.md](docs/demo-script.md).
+**[Watch the demo on Google Drive](https://drive.google.com/file/d/11xXZVgNJLbp9ucKIqsLne68M1umIWe_c/view?usp=sharing)** (about 5 minutes). It follows one user through two jobs: an invoice from a DOCX template, then quarterly review slides from a PPTX template.
 
 ---
 
@@ -169,7 +169,7 @@ packages/shared/ Kind registry and API types shared by both apps
 templates/       manifest.json, template files, preview images
 scripts/         generate-templates.ts, render-previews.ts
 e2e/             Playwright end-to-end tests
-docs/            API and data model, domain model and rendered views, demo video script
+docs/            API and data model, domain model and rendered views
 ```
 
 ---
