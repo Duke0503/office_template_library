@@ -1,129 +1,161 @@
 # Demo video script
 
-A screen recording of about 5 minutes that walks through every requirement in the brief. Each scene lists what to do on screen and what to say. Timings are a guide only.
+A screen recording of about 5–6 minutes. Rather than going through the requirements one by one, the video follows **one continuous story**: today the user has two jobs, sending an invoice to a client and preparing the quarterly review slides. Every requirement of the brief comes up naturally while doing those two jobs. The technical part comes at the end.
+
+Each scene has **Do** (on screen), **Say** (narration) and **Bridge** (the line that leads into the next scene).
+
+| Part | Content | Brief requirements shown |
+|---|---|---|
+| Opening | Introduction and the two jobs | |
+| Job 1 | Invoice: find → preview → create → edit → save → download → template unchanged | Gallery, search, filter, preview, use template, editor, save, download, formatting kept, original untouched |
+| Job 2 | Quarterly review slides, then finding files in My documents | PPTX gallery, slide preview, My documents search |
+| Details | Errors, dark theme, phone | Loading, error and not-found states, responsive |
+| Behind it | Adding templates, architecture, tests | Templates added without UI changes, data model, quality |
 
 ## Before recording
 
-1. Start from a clean state, so My documents is empty and the counts are clear.
-   This deletes the documents created by earlier test runs:
+1. Start from a clean state, so My documents is empty. This deletes the documents created by earlier test runs:
 
    ```bash
    docker compose down -v
    docker compose up -d --build
    ```
 
-2. Wait until `http://localhost:3000/api/health` shows `"documentServer":"up"` (about a minute).
-3. Warm up the editor once: open any template, click **Use template**, wait for the editor, then close the tab.
-   The first editor load is slow. Then run `docker compose down -v && docker compose up -d` again, or keep that one document.
+2. Wait about a minute, until `http://localhost:3000/api/health` shows `"documentServer":"up"`.
+3. The first editor load is slow. Do one full rehearsal, then repeat step 1 before the real take.
 4. Browser: one window at about 1440×900, zoom 100%, light theme, no other tabs, bookmarks bar hidden.
-5. Have these ready in other windows: VS Code with the repo open, a terminal in the repo folder, and Word or LibreOffice to open a downloaded file.
-6. Optional: run `npm test` and `npm run test:e2e` before recording, and keep the terminal output for scene 10.
+5. Have ready in other windows: Word (to open the download), VS Code with the repo, and a terminal showing the output of `npm test` and `npm run test:e2e`.
 
-## Scenes
+## Opening (0:00–0:20)
 
-### 1. Introduction (0:00–0:20)
+**Do:** open `http://localhost:3000`, the Document templates gallery.
 
-**Screen:** `http://localhost:3000`, the Document templates gallery.
+**Say:** "This is the Office Template Library, a library of document and presentation templates for an office app. To show how it works, I'll play someone with two jobs today: send an invoice to a new client, and prepare the quarterly review slides."
 
-**Say:** "This is my Office Template Library. It has two products, a document library for DOCX and a presentation library for PPTX. Both run on one template engine. Users pick a template, preview it, and create their own copy, which they edit in ONLYOFFICE inside the app. The original template never changes."
+**Bridge:** "Let's start with the invoice."
 
-### 2. Gallery, search and filter (0:20–1:00)
+## Job 1: Send an invoice
 
-**Do:**
-
-1. Point at a card: thumbnail, name, description, category.
-2. Type `invoice` in the search box. One card remains. Point at `?q=invoice` in the address bar.
-3. Reload the page. The search is still there.
-4. Clear the search. Click the **Education** chip, then **All**.
-5. Type `zzz`. The empty state appears. Click **Clear filters**.
-
-**Say:** "There are six document templates and four presentations. Search matches name, description and category, and the filters live in the URL, so a filtered view can be shared or reloaded. Every list has loading, error and empty states."
-
-### 3. Preview (1:00–1:30)
+### 1.1 Find the template (0:20–0:45)
 
 **Do:**
 
-1. Click **Project Proposal**. The preview dialog opens with the full page.
-2. Go to **Presentations** and open **Startup Pitch Deck**.
-3. Page with the right arrow key and click a slide in the filmstrip. Press **Escape**.
+1. Scan the grid. Point at one card: thumbnail, name, description, category.
+2. Click the **Finance** chip; only finance templates remain. Click **All**.
+3. Type `invoice` in the search box; one card remains. Point at `?q=invoice` in the address bar.
 
-**Say:** "The preview shows every page or slide. The images are rendered by ONLYOFFICE itself, so they match what the editor shows. You can page with the keyboard, and the dialog's address can be shared."
+**Say:** "Each template is a card with a preview image, a name, a description and a category. I can filter by category or just type. The filters live in the URL, so a colleague I send the link to sees exactly what I see."
 
-### 4. Use a DOCX template and edit it (1:30–2:45)
+**Bridge:** "Before using it, I want to see what it looks like."
+
+### 1.2 Preview (0:45–1:00)
+
+**Do:** click the **Invoice** card. The preview dialog opens. Point at the sample client `Sunrise Retail Co., Ltd.` and the services table.
+
+**Say:** "The preview shows the whole template. ONLYOFFICE renders these images itself, so they match what I'll see in the editor. It already has the services table, VAT and the total, which is what I need."
+
+**Bridge:** "I'll click Use template."
+
+### 1.3 Create a copy and edit it (1:00–1:50)
 
 **Do:**
 
-1. Go to **Documents** and open **Invoice**. Click **Use template**.
-2. The editor opens. Point at the **v1** badge in the header.
-3. Edit the document:
-   - Under "Bill to", replace `Sunrise Retail Co., Ltd.` with a new client name.
-   - Add a line of text and make it **bold**.
+1. Click **Use template**. The editor opens. Point at the **v1** badge in the header.
+2. Under "Bill to", replace `Sunrise Retail Co., Ltd.` with the new client's name.
+3. Add a note line and make it **bold**.
 4. Click **Done**.
 
-**Say:** "Use template makes a copy of the template and checks its SHA-256 checksum, then opens the copy in ONLYOFFICE. I'm editing my copy, not the template. ONLYOFFICE saves when the editor closes. It calls back to my API, which stores the file as a new version."
+**Say:** "Use template makes a copy of the template, checks its checksum to be sure it's identical, and opens the copy in ONLYOFFICE, inside the app. I change the client and add a bold note. I'm editing my own copy, not the template. When I'm finished, I click Done."
 
-### 5. My documents: save, search, download (2:45–3:30)
+**Bridge:** "Done takes me to my documents."
+
+### 1.4 Save and download (1:50–2:30)
 
 **Do:**
 
 1. My documents opens. After a few seconds the Invoice row shows **Version 2** and "just now".
-2. Type `invoice` in the search box, then click the **Documents** type filter. Clear both.
-3. Click **Download** on the Invoice row and open the file in Word.
-   Show that the new client name, the bold line, the tables and the totals are all there.
+2. Click **Download** and open the file in Word. Point at the new client, the bold note, the tables and the total.
 
-**Say:** "Here is the saved version 2. My documents has search and a type filter too. The downloaded file opens in Word with the edits, and the original formatting is intact: tables, bold text, headings."
+**Say:** "When the editor closes, ONLYOFFICE sends the edited file to the server, which stores it as version 2. I download it and open it in Word. The new client and the bold note are there, and the template's tables, headings and formatting are intact. It's ready to send."
 
-### 6. The original template is unchanged (3:30–3:50)
+**Bridge:** "One important question: did the template change?"
 
-**Do:**
+### 1.5 The template is unchanged (2:30–2:45)
 
-1. Go back to the Documents gallery and open the **Invoice** preview. It still shows `Sunrise Retail Co., Ltd.`
-2. Click **Use template** again. The new copy opens without the edits. Click **Done**.
+**Do:** click **Documents** in the top bar and open the **Invoice** preview. It still shows `Sunrise Retail Co., Ltd.`
 
-**Say:** "The template is untouched. Template files are stored read-only, every save writes a new file, and the tests compare checksums before and after."
+**Say:** "The template is exactly as it was, so the next colleague gets a clean copy. Template files are stored read-only, every save writes a new file, and the tests compare the template's checksum before and after."
 
-### 7. Presentation flow (3:50–4:25)
+**Bridge:** "That's the first job done. Now the quarterly slides."
 
-**Do:**
+## Job 2: Quarterly review slides
 
-1. Go to **Presentations** and open **Quarterly Business Review**. Click **Use template**.
-2. Change the title on slide 1 and click **Done**.
-3. In My documents, the presentation appears, and its version goes up after the save.
-
-**Say:** "Presentations use the same engine and the same flow. DOCX and PPTX are two entries in a registry, so adding XLSX later is one entry."
-
-### 8. States, theme, responsive (4:25–4:50)
+### 2.1 Pick and preview a presentation (2:45–3:10)
 
 **Do:**
 
-1. Open `http://localhost:3000/templates/xlsx`. The page shows **Page not found**.
-2. Open `http://localhost:3000/documents/00000000-0000-0000-0000-000000000000/edit`. The page shows **Document not found**.
-3. Click the theme toggle to switch to dark mode, then back.
-4. Open DevTools and switch to a phone viewport. Show the gallery and the preview sheet.
+1. Press Escape, then click **Presentations** in the top bar.
+2. Open **Quarterly Business Review**. Page through a few slides with the right arrow key and click one in the filmstrip.
 
-**Say:** "Unknown pages, templates and documents each get a clear message. The app has light and dark themes and works from phone to desktop."
+**Say:** "The presentation library works the same way. The preview lets me page through every slide, with the keyboard or the filmstrip. This one has the summary, the numbers and the plan."
 
-### 9. Adding a template without UI changes (4:50–5:15)
+**Bridge:** "I'll use this one."
 
-**Screen:** VS Code, `templates/manifest.json`.
+### 2.2 Create and edit (3:10–3:35)
 
-**Say:** "Templates come only from this manifest. To add one, I put the file in `templates/files`, add an entry here, render its previews and restart the app. The gallery picks it up with no code change and no rebuild. Replacing a file creates a new revision, and removing an entry archives the template, while documents made from it keep working."
+**Do:** click **Use template**. Change the subtitle on slide 1 to your quarter. Click **Done**.
 
-### 10. Architecture and tests (5:15–5:45)
+**Say:** "Same flow: copy, edit in ONLYOFFICE, Done. Documents and presentations share one engine. DOCX and PPTX are two entries in a registry, so adding Excel later is one more entry."
+
+**Bridge:** "Now my list has a few files in it."
+
+### 2.3 Find a file again (3:35–3:55)
 
 **Do:**
 
-1. Show the README architecture diagram on GitHub.
-2. Show the terminal output: `npm test` (20 passed) and `npm run test:e2e` (14 passed).
+1. In My documents, point at the two new documents.
+2. Click the **Presentations** filter, then **All**. Type `invoice` in the search box.
+3. Change it to `zzz`; the empty state appears. Click **Clear filters**.
 
-**Say:** "It's a modular monolith, with an Express API and a React app in one container, and ONLYOFFICE Document Server beside it. The catalog, workspace and editor modules talk only through ports. There are 20 API tests, and Playwright end-to-end tests drive the real editor, save a DOCX and check the downloaded file."
+**Say:** "As the list grows, I can filter by type or search by name. A wrong search says clearly that nothing matches, and offers to clear the filters. To keep editing a file, I click Open."
 
-### 11. Close (5:45–6:00)
+**Bridge:** "That's the main flow. A few details next."
 
-**Say:** "Everything runs with one command, `docker compose up`. The README covers setup, architecture, the API, limits, licenses, and how I used AI. Thanks for watching."
+## Details (3:55–4:25)
+
+**Do**, without stopping:
+
+1. Switch to the dark theme with the toggle, then back.
+2. Open DevTools and switch to a phone viewport. Show the gallery and a preview. Close DevTools.
+3. Type `localhost:3000/documents/00000000-0000-0000-0000-000000000000/edit` in the address bar. The page shows **Document not found**, with a link back to My documents. Click it.
+
+**Say:** "There are light and dark themes, and the app works on a phone. An old link to a document that no longer exists gets a clear explanation and a way back. Every screen has loading, error and not-found states."
+
+**Bridge:** "Finally, what's behind it."
+
+## Behind the app (4:25–5:15)
+
+### Adding a template without UI changes
+
+**Do:** switch to VS Code, open `templates/manifest.json` and point at one entry.
+
+**Say:** "Templates are declared in this manifest. To add one, I copy the file into the templates folder, add an entry here, render its previews and restart the app. No UI code changes. Replacing a file creates a new revision. Removing an entry archives the template, and documents made from it keep working."
+
+### Architecture and tests
+
+**Do:** open the README on GitHub and show the architecture diagram. Switch to the terminal: `npm test` (20 passed) and `npm run test:e2e` (14 passed).
+
+**Say:** "The Express API and the React app run in one container, with ONLYOFFICE Document Server in its own container beside it. Inside, three modules, catalog, workspace and editor, talk to each other through ports. There are 20 API tests, and Playwright end-to-end tests replay the flow I just showed against the real editor: edit, save, download and check the contents."
+
+## Close (5:15–5:30)
+
+**Do:** return to the browser, on the gallery.
+
+**Say:** "Everything runs with one command, `docker compose up`. The README covers setup, architecture, the API, limits, third-party licenses, and how I used AI. Thanks for watching."
 
 ## Tips
 
-- Saving takes a few seconds after **Done**. If version 2 doesn't appear yet, wait; the list refreshes on its own for 30 seconds.
-- If the editor shows "The editor is unavailable", Document Server is still starting. Wait and click **Retry**.
-- To keep the video short, cut the waits for the editor to load.
+- Say the **Bridge** line while you click through to the next screen, so there are no silences.
+- Saving takes a few seconds after **Done**. If version 2 isn't there yet, keep talking; the list refreshes on its own for 30 seconds.
+- If the editor shows "The editor is unavailable", Document Server is still starting. Wait, then click **Retry**.
+- When editing the video, cut the waits for the editor to load.
