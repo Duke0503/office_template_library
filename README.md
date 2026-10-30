@@ -61,7 +61,7 @@ npm run test:e2e
 | Loading, error and not-found states | Skeletons, error alerts with Retry, empty states, not-found pages |
 | Basic formatting preserved | The e2e test edits a DOCX, then checks tables, bold text and content after the round trip |
 
-Extras: light and dark theme, responsive layout from phone to desktop, template revisions, archiving, and a "My documents" list.
+Extras: light and dark theme, responsive layout from phone to desktop, template revisions, archiving, and a "My documents" list with search and a type filter.
 
 ---
 
@@ -165,7 +165,7 @@ packages/shared/ Kind registry and API types shared by both apps
 templates/       manifest.json, template files, preview images
 scripts/         generate-templates.ts, render-previews.ts
 e2e/             Playwright end-to-end tests
-docs/            API and data model, domain model and rendered views
+docs/            API and data model, domain model and rendered views, demo video script
 ```
 
 ---
@@ -176,7 +176,7 @@ docs/            API and data model, domain model and rendered views
 
 - Both products: document and presentation galleries, search, category filter, preview, use template, ONLYOFFICE editing, save on close, download, and My documents.
 - Template data model, manifest import with revisions and archiving, and file type validation.
-- 20 API tests and 9 Playwright e2e tests: 6 gallery and state tests, 2 real ONLYOFFICE round trips (DOCX edit and save, PPTX), and My documents. The 3 `@responsive` tests also run on a phone viewport, 12 runs in total. All pass against `docker compose up`.
+- 20 API tests and 10 Playwright e2e tests: 6 gallery and state tests, 2 real ONLYOFFICE round trips (DOCX edit and save, PPTX), and 2 My documents tests (list, search and filter). The 4 `@responsive` tests also run on a phone viewport, 14 runs in total. All pass against `docker compose up`.
 - Docker Compose with one command, plus light and dark themes and responsive layouts.
 
 ### Not done and limits

@@ -69,3 +69,31 @@ test('My documents lists created documents with open and download actions @respo
   await expect(row.getByRole('link', { name: 'Open' })).toBeVisible();
   await expect(row.getByRole('link', { name: 'Download' })).toHaveAttribute('href', /\/api\/documents\/.+\/download$/);
 });
+
+test('My documents search and type filter find a document and keep the filters in the URL @responsive', async ({ page }) => {
+  await page.goto('/documents');
+  const rows = page.getByTestId('document-row').filter({ visible: true });
+  await expect(rows.first()).toBeVisible();
+
+  await page.getByRole('searchbox', { name: 'Search my documents' }).fill('quarterly');
+  await expect(page).toHaveURL(/q=quarterly/);
+  await expect(rows.first()).toContainText('Quarterly Business Review');
+  for (const text of await rows.allInnerTexts()) expect(text).toContain('Quarterly Business Review');
+
+  await page.reload();
+  await expect(page.getByRole('searchbox', { name: 'Search my documents' })).toHaveValue('quarterly');
+  await expect(rows.first()).toContainText('Quarterly Business Review');
+
+  await page.getByRole('button', { name: 'Clear search' }).click();
+  await expect(page).not.toHaveURL(/q=/);
+  await page.getByRole('radio', { name: 'Documents' }).click();
+  await expect(page).toHaveURL(/kind=docx/);
+  await expect(rows.first()).toContainText('Invoice');
+  for (const text of await rows.allInnerTexts()) expect(text).not.toContain('Presentation');
+
+  await page.getByRole('searchbox', { name: 'Search my documents' }).fill('zzzz-no-match');
+  await expect(page.getByText('No documents match "zzzz-no-match"')).toBeVisible();
+  await page.getByRole('button', { name: 'Clear filters' }).click();
+  await expect(page).not.toHaveURL(/kind=|q=/);
+  await expect.poll(() => rows.count()).toBeGreaterThanOrEqual(2);
+});

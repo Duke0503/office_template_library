@@ -50,7 +50,7 @@ Plain office language using the domain words: Template, Document, Presentation, 
 | Category filter | A row of toggle chips: "All" plus one chip per category that has templates of this kind, each with its count. It scrolls sideways on phone. One category is selected at a time, and picking the active chip again returns to "All". |
 | Preview dialog | Opens on page or slide 1. The filmstrip and the ← → keys move between pages. "Use template" creates the document, shows "Creating your document…" on the button, then navigates to the editor. Esc or Back closes it. |
 | Editor page | Loads the editor config, then mounts ONLYOFFICE full-height. The header Download button always downloads the last saved version. "Done" returns to My documents. |
-| My documents | A table on tablet and desktop (Title, Type, From template, Version, Last saved, actions) and cards on phone. Each row has Open (primary) and Download. Newest first. |
+| My documents | A table on tablet and desktop (Title, Type, From template, Version, Last saved, actions) and cards on phone. Each row has Open (primary) and Download. Newest first. Above the list: a search box (matches title or template name, debounced, kept in `?q=`) and a type filter All / Document / Presentation (`?kind=`), using the gallery's search and chip patterns. Filtering is client-side; the list is one local user's documents. |
 | Theme toggle | Cycles System, Light and Dark, and remembers the choice in local storage. |
 
 ## State Patterns
@@ -66,6 +66,7 @@ Plain office language using the domain words: Template, Document, Presentation, 
 | Error | Editor script or config | An Alert: "The editor is unavailable. Document Server may still be starting; this takes about a minute after `docker compose up`." It offers Retry and Download. |
 | Empty | Gallery with filters | "No templates match "{q}"" (or "…in {category}"), with a "Clear filters" button. |
 | Empty | My documents | "No documents yet. Pick a template to start." with buttons to both galleries. |
+| Empty, filtered | My documents | `No documents match "{q}"` (or "No {type}s yet") with a Clear filters button. |
 | Not found | Unknown route | "Page not found", with a link to the galleries. |
 | Not found | `?preview=` with an unknown id | The dialog shows "This template no longer exists." with a Close button. |
 | Not found | Editor with an unknown document | "Document not found", with a link to My documents. |

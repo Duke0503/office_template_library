@@ -1,26 +1,107 @@
-import { kindOf, type DocumentDto } from '@otl/shared';
-import { DownloadIcon, FolderOpenIcon, PencilIcon } from 'lucide-react';
-import { Link, useLocation } from 'react-router';
+import { isTemplateKind, kindOf, TEMPLATE_KINDS, type DocumentDto } from '@otl/shared';
+import { DownloadIcon, FolderOpenIcon, PencilIcon, SearchIcon, SearchXIcon, XIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router';
 import { useDocuments } from '@/api/hooks';
 import { Page } from '@/components/app-shell';
 import { ErrorState } from '@/components/states';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { KIND_ICONS } from '@/lib/kind-icons';
 import { timeAgo } from '@/lib/format';
 
-/** My documents (CAP-7). Polls briefly after the editor closes so the saved version appears. */
+/**
+ * My documents (CAP-7). Polls briefly after the editor closes so the saved version appears.
+ * Search (`q`) and type (`kind`) live in the URL and filter client-side: it is one local user's list.
+ */
 export function DocumentsRoute() {
   const location = useLocation();
   const closedAt = (location.state as { editorClosedAt?: number } | null)?.editorClosedAt;
   const documents = useDocuments({ pollUntil: closedAt ? closedAt + 30_000 : undefined });
-  const items = documents.data?.items ?? [];
+  const all = documents.data?.items ?? [];
+
+  const [params, setParams] = useSearchParams();
+  const q = params.get('q') ?? '';
+  const kindParam = params.get('kind');
+  const kind = isTemplateKind(kindParam) ? kindParam : null;
+
+  const update = (patch: Record<string, string | null>) => {
+    const next = new URLSearchParams(params);
+    for (const [key, value] of Object.entries(patch)) {
+      if (value) next.set(key, value);
+      else next.delete(key);
+    }
+    // Keep the editor-closed state so polling survives filter changes.
+    setParams(next, { replace: true, state: location.state });
+  };
+
+  // Debounced search box (250 ms) that writes to the URL, as in the gallery.
+  const [draft, setDraft] = useState(q);
+  useEffect(() => setDraft(q), [q]);
+  useEffect(() => {
+    if (draft === q) return;
+    const t = setTimeout(() => update({ q: draft.trim() || null }), 250);
+    return () => clearTimeout(t);
+  }, [draft]);
+
+  const needle = q.toLowerCase();
+  const items = all.filter(
+    (d) =>
+      (!kind || d.kind === kind) &&
+      (!needle || d.title.toLowerCase().includes(needle) || d.origin.templateName.toLowerCase().includes(needle)),
+  );
+  const filtered = Boolean(q || kind);
 
   return (
     <Page title="My documents" description="Documents you created from templates. Open one to keep editing, or download it.">
+      {all.length > 0 && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <InputGroup className="h-10 sm:max-w-sm">
+            <InputGroupAddon>
+              <SearchIcon />
+            </InputGroupAddon>
+            <InputGroupInput
+              type="search"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Search by title or template…"
+              aria-label="Search my documents"
+            />
+            {draft && (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setDraft('')}>
+                  <XIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+            )}
+          </InputGroup>
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={kind ?? 'all'}
+            onValueChange={(value) => update({ kind: value && value !== 'all' ? value : null })}
+            aria-label="Filter by type"
+            className="w-max"
+          >
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            {TEMPLATE_KINDS.map((k) => (
+              <ToggleGroupItem key={k} value={k}>
+                {kindOf(k).pluralLabel}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
+
+      <p className="sr-only" aria-live="polite">
+        {documents.isSuccess && filtered && (items.length ? `${items.length} documents` : 'No documents match')}
+      </p>
+
       {documents.isPending ? (
         <div className="flex flex-col gap-2">
           {Array.from({ length: 5 }, (_, i) => (
@@ -29,7 +110,7 @@ export function DocumentsRoute() {
         </div>
       ) : documents.isError ? (
         <ErrorState title="Couldn't load your documents." error={documents.error} onRetry={() => documents.refetch()} />
-      ) : items.length === 0 ? (
+      ) : all.length === 0 ? (
         <Empty className="border py-12">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -44,6 +125,21 @@ export function DocumentsRoute() {
             </Button>
             <Button asChild variant="outline">
               <Link to="/templates/pptx">Presentation templates</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      ) : items.length === 0 ? (
+        <Empty className="border py-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchXIcon />
+            </EmptyMedia>
+            <EmptyTitle>{q ? `No documents match "${q}"` : `No ${kindOf(kind!).pluralLabel.toLowerCase()} yet`}</EmptyTitle>
+            <EmptyDescription>Try another word or clear the filters.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button variant="outline" onClick={() => update({ q: null, kind: null })}>
+              Clear filters
             </Button>
           </EmptyContent>
         </Empty>
