@@ -4,6 +4,10 @@ A template library for an office app. Users browse **document (DOCX)** and **pre
 
 Both products from the brief, the document library and the presentation library, are one application with one template engine. DOCX and PPTX are two *kinds* in a registry, so adding XLSX later is one registry entry.
 
+## Demo video
+
+**[Watch the demo on Google Drive](https://drive.google.com/file/d/11xXZVgNJLbp9ucKIqsLne68M1umIWe_c/view?usp=sharing)** (about 5 minutes). It follows one user through two jobs: an invoice from a DOCX template, then quarterly review slides from a PPTX template. The script is in [docs/demo-script.md](docs/demo-script.md).
+
 ---
 
 ## Quick start
